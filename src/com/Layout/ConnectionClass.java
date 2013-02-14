@@ -21,18 +21,7 @@ public class ConnectionClass {
 		
 		StartThread m=new StartThread();
 	
-			try {
-				m.mainTask(searchQuery);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OWLOntologyCreationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			m.mainTask(searchQuery);
 		
 		
 		query_list.addAll(m.Query_List);

@@ -10,5 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME"/>
+	<classpathentry kind="lib" path="/home/saeedeh/My Computer/Drive-F/Eclipse Project/jar file/edu.mit.jwi_2.2.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
