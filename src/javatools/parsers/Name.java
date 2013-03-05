@@ -1,5 +1,4 @@
 package javatools.parsers;
-import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;

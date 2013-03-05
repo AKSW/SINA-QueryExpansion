@@ -4,9 +4,6 @@ import com.vaadin.Application;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Button.ClickEvent;
-import java.io.*;
 
 public class Sina_vaad extends Application  {
 	

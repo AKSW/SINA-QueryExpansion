@@ -1,10 +1,5 @@
 package com.Layout;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.hp.hpl.jena.query.Query;

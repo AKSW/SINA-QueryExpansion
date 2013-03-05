@@ -19,7 +19,6 @@ import java.util.Map;
 import javatools.administrative.Announce;
 import javatools.administrative.D;
 import javatools.filehandlers.CSVLines;
-import javatools.filehandlers.UTF8Reader;
 import javatools.filehandlers.UTF8Writer;
 
 /** 

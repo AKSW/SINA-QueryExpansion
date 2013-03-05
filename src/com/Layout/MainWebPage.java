@@ -3,10 +3,6 @@ package com.Layout;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-import Model.javatools.parsers.PlingStemmer;
-
-import com.vaadin.data.Container;
-import com.vaadin.data.util.BeanContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.ThemeResource;
