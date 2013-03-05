@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;

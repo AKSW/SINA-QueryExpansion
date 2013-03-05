@@ -1,12 +1,8 @@
 package com.Layout;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.LinkedList;
 
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-
-import Model.StartThread;;
+import model.StartThread;;
 
 public class ConnectionClass {
 
