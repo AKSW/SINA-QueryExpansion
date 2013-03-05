@@ -73,12 +73,11 @@ public Set<String> getLabelsViaSameAsOverLOD(String Pattern, ArrayList Segment) 
 			System.out.println("finish by exeption" +e.getMessage());
 			
 		}
-		finally{
+		finally
+		{
+		
 		}
 		
-		
-		Functionality f = new Functionality();
-		PreProcessing p = new PreProcessing();
 		
 		ArrayList LabelList;
 		System.out.println("saeedeh feting finished");
