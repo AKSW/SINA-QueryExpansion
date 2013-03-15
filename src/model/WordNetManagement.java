@@ -68,10 +68,10 @@ public class WordNetManagement
 			IndexWord indexWord = getDict().getIndexWord(pos,word);
 			if(indexWord!=null) synsets.addAll(Arrays.asList(indexWord.getSenses()));
 		}
-
 		return synsets;
 	}
 
+	/** Returns all lemmas of all hypernyms (more general words) of a word, e.g.  Tea -> {Drink,Plant}.**/
 	static public SortedSet<String> getHypernyms(String word) throws JWNLException, FileNotFoundException
 	{		
 		TreeSet<String> lemmas = new TreeSet<String>();
@@ -82,6 +82,7 @@ public class WordNetManagement
 		return lemmas;
 	}
 
+	/** Returns all lemmas of all hyponyms (more specialized words) of a word, e.g.  Drink -> {Water,Tea}.**/
 	static public SortedSet<String> getHyponyms(String word) throws JWNLException, FileNotFoundException
 	{		
 		TreeSet<String> lemmas = new TreeSet<String>();
@@ -92,11 +93,14 @@ public class WordNetManagement
 		return lemmas;
 	}
 
-	//
-	//	public SortedSet<String> getHyponyms(String word) throws JWNLException
-	//	{
-	//		return getPointerTargetNodeListLemmas(PointerUtils.getInstance().getDirectHyponyms(synset));
-	//	}
+	/** Returns all lemmas of all synonyms of a word, e.g. Waste Bin -> {Waste Basket}.**/
+	static public SortedSet<String> getSynonyms(String word) throws JWNLException, FileNotFoundException
+	{		
+		TreeSet<String> lemmas = new TreeSet<String>();
+		for(Synset synset : getSynsets(word)) {lemmas.addAll(getSynsetLemmas(synset));}
+		return lemmas;
+	}
+	
 
 	public static void main(String[] args) throws FileNotFoundException, JWNLException
 	{
@@ -108,33 +112,31 @@ public class WordNetManagement
 			Set<Synset> synsets = getSynsets(word);
 			SortedSet<String> synonyms = new TreeSet<String>();
 
-			
-			SortedSet<String> crossPosLemmas = new TreeSet<String>();
-			for(Synset synset: synsets)
-			{
-				Pointer[] pointers = synset.getPointers();
-				for(Pointer pointer : pointers)
-				{					
-					if(pointer.getType()!=PointerType.NOMINALIZATION) continue;					
-					for(Pointer pointerPointer: pointer.getTarget().getPointers())
-					{
-						for(Word w : pointerPointer.getTargetSynset().getWords()) 
-							crossPosLemmas.add(w.getLemma());
-					}
-				}
-				synonyms.addAll(getSynsetLemmas(synset));
-			}
+//			SortedSet<String> crossPosLemmas = new TreeSet<String>();
+//			for(Synset synset: synsets)
+//			{
+//				Pointer[] pointers = synset.getPointers();
+//				for(Pointer pointer : pointers)
+//				{					
+//					if(pointer.getType()!=PointerType.NOMINALIZATION) continue;					
+//					for(Pointer pointerPointer: pointer.getTarget().getPointers())
+//					{
+//						for(Word w : pointerPointer.getTargetSynset().getWords()) 
+//							crossPosLemmas.add(w.getLemma());
+//					}
+//				}
+//				synonyms.addAll(getSynsetLemmas(synset));
+//			}
 			//				System.out.println(getPointerTargetNodeListLemmas(PointerUtils.getInstance().getParticipleOf(synset)));
 			//				System.out.println(getPointerTargetNodeListLemmas(PointerUtils.getInstance().getDerived(synset)));
-			
 
 
-			System.out.println("Synonyms: "+synonyms);
+
+			System.out.println("Synonyms: "+getSynonyms(word));
 			System.out.println("Hypernyms: "+getHypernyms(word));
 			System.out.println("Hyponyms: "+getHyponyms(word));
-			System.out.println("crossPosLemmas: "+crossPosLemmas);
+//			System.out.println("crossPosLemmas: "+crossPosLemmas);
 			break;
 		}
-	}
-
+	}	
 }
