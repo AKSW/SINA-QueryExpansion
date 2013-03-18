@@ -3,7 +3,7 @@ package model;
 import java.util.TreeSet;
 import java.util.*;
 
-public class Management_Expansion {
+public class ManagementExpansion {
 	
 	
 	// keywords extracted from WordNet

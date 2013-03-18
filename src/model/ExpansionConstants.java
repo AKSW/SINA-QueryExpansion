@@ -1,6 +1,6 @@
 package model;
 
-public class Expansion_Constants {
+public class ExpansionConstants {
 	
 	
 	public static final int TYPE_INSTANCE       = 0;

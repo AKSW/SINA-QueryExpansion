@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.apache.commons.collections15.multimap.MultiHashMap;
 import org.junit.Test;
 
-public class ExportTest
+public class ImportExportTest
 {
 
 	@Test
@@ -16,8 +16,8 @@ public class ExportTest
 		map.putAll("word",Arrays.asList(new String[]{"schmörd","börd"}));
 		map.putAll("wort",Arrays.asList(new String[]{"schmört","bört"}));
 				
-		String s = Export.multiMapToStringCsvTsv(map);
-		String t = "word	schmörd,börd\nwort	schmört,bört";	
+		String s = ImportExport.multiMapToStringCsvTsv(null,map);
+		String t = "word		schmörd,börd\nwort		schmört,bört";	
 		assertTrue(s.equals(t));
 	}
 

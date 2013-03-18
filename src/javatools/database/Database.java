@@ -112,7 +112,9 @@ public class Database {
   protected List<Inserter> inserters=new ArrayList<Inserter>();  
 
   /** The mapping from Java to SQL */
-  public Map<Class, SQLType> java2SQL = new HashMap<Class, SQLType>();
+  
+  @SuppressWarnings("rawtypes")
+public Map<Class, SQLType> java2SQL = new HashMap<Class, SQLType>();
   {
     java2SQL.put(Boolean.class, SQLType.ansiboolean);
     java2SQL.put(boolean.class, SQLType.ansiboolean);

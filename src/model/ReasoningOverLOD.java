@@ -36,7 +36,7 @@ package model;
 //			" FILTER( langMatches(lang(?labelSameAs), \"en\")). }"; //  //" FILTER(REGEX(?label,\"" + Pattern  + "\")). " ;  + option +  "   }  "; //limit 10 " FILTER regex(str(?iri), \"http://dbpedia.org/resource/\")
 //		
 //		System.out.println("-------retrieved query is:" +querystring);
-//		String urlsever = Expansion_Constants.LODendpoint;
+//		String urlsever = ExpansionConstants.LODendpoint;
 //		//Query query=QueryFactory.create(querystring);
 //		QueryEngineHTTP qexec = new QueryEngineHTTP(urlsever, querystring);	
 //		//QueryExecution qexec = QueryExecutionFactory.sparqlService(urlsever,query);
