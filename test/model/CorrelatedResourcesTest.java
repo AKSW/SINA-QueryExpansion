@@ -11,7 +11,7 @@ import org.junit.Test;
 public class CorrelatedResourcesTest
 {
 	@Test
-	public void testCorrelatedDBpediaResourceLabels()
+	public void testCorrelatedDBpediaResourceLabels() throws InterruptedException
 	{
 		System.out.println(CorrelatedResources.correlatedDBpediaResourceLabels("http://dbpedia.org/ontology/Country"));
 	}

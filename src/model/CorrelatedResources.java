@@ -3,6 +3,10 @@ package model;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QuerySolution;
@@ -26,8 +30,9 @@ public class CorrelatedResources
 		return resources;
 	}
 
-	public static Set<String> correlatedDBpediaResourceLabels(String uri)
+	public static Set<String> correlatedDBpediaResourceLabels(String uri) throws InterruptedException
 	{
+		System.out.println("getting labels for uri"+uri+"...");
 		uri = PrefixHelper.expand(uri);
 		final String ENDPOINT = "http://live.dbpedia.org/sparql";
 		Set<String> resources;
@@ -48,14 +53,23 @@ public class CorrelatedResources
 		{
 			if(resource.startsWith("http://dbpedia.org/"))	dbpediaResources.add(resource);
 		}
-		Set<String> labels = new HashSet<String>();
+		final Set<String> labels = new HashSet<String>();
 		// TODO: optimize speed (multithreading and/or union or some library like from Claus)
-		for(String resource : dbpediaResources)
+		ExecutorService executor = Executors.newFixedThreadPool(10);
+		for(final String resource : dbpediaResources)
 		{
-			QueryExecution qe = new QueryEngineHTTP(ENDPOINT,"select ?l {<"+resource+"> rdfs:label ?l. filter(langmatches(lang(?l),'en'))}");
-			ResultSet rs = qe.execSelect();
-			if(rs.hasNext()) {labels.add(qe.execSelect().next().getLiteral("?l").getLexicalForm());}
+			Future f = executor.submit(new Runnable()
+			{			
+				@Override
+				public void run()
+				{
+					QueryExecution qe = new QueryEngineHTTP(ENDPOINT,"select ?l {<"+resource+"> rdfs:label ?l. filter(langmatches(lang(?l),'en'))}");
+					ResultSet rs = qe.execSelect();
+					if(rs.hasNext()) {labels.add(qe.execSelect().next().getLiteral("?l").getLexicalForm());}
+				}
+			}); 
 		}
+		if(!executor.awaitTermination(1,TimeUnit.MINUTES)) throw new RuntimeException("timeout when getting the labels of uri"+uri);
 		return labels;
 	}
 
@@ -66,11 +80,11 @@ public class CorrelatedResources
 		//		Set<String> superClasses	= answerSet(endpoint,"select distinct ?l where {<"+clazz+"> rdfs:subClassOf ?sup.?sub rdfs:label ?l. filter(langmatches(lang(?l),'en'))}","?l");	
 		//		Set<String> otherClasses	= answerSet(endpoint,"select distinct ?l where {?s a <"+clazz+">. ?s a ?c. filter (?c!=<"+clazz+">).?c rdfs:label ?l. filter(langmatches(lang(?l),'en'))}","?l");
 		//		Set<String> sameLabel 		= answerSet(endpoint,"select distinct ?l where {<"+clazz+"> rdfs:label ?l. ?c rdfs:label ?l.?c rdfs:label ?l. filter(langmatches(lang(?l),'en'))}","?l");		
-
+		
 		Set<String> subClasses		= answerSet(endpoint,"select ?sub where {?sub rdfs:subClassOf <"+clazz+">}","?sup");
 		Set<String> superClasses	= answerSet(endpoint,"select ?sup where {<"+clazz+"> rdfs:subClassOf ?sup}","?sup");	
 		Set<String> otherClasses	= answerSet(endpoint,"select ?c where {?s a <"+clazz+">. ?s a ?c. filter (?c!=<"+clazz+">)}","?c");
-		Set<String> sameLabel 		= answerSet(endpoint,"select ?c where {<"+clazz+"> rdfs:label ?l. ?c rdfs:label ?l. filter (?c!=<"+clazz+">)}","?c");		
+		Set<String> sameLabel 		= answerSet(endpoint,"select ?c where {<"+clazz+"> rdfs:label ?l. ?c rdfs:label ?l. }","?c");//filter (?c!=<"+clazz+">)		
 		Set[] subSets = {subClasses,superClasses,otherClasses,sameLabel};
 		Set<String> resources = new HashSet<String>();
 		for(Set<String> subSet : subSets) resources.addAll(subSet);
@@ -85,13 +99,17 @@ public class CorrelatedResources
 	protected static Set<String> correlatedResourcesForProperty(String endpoint, String prop)
 	{
 		int LIMIT = 100;
-		Set<String> subProperties	= answerSet(endpoint,"select ?sub where {?sub rdfs:subPropertyOf <"+prop+">}","?sub");
-		Set<String> superProperties	= answerSet(endpoint,"select ?sup where {<"+prop+"> rdfs:subPropertyOf ?sup}","?sup");	
+		System.out.println("getting sub properties...");
+		Set<String> subProperties	= answerSet(endpoint,"select ?sub where {?sub rdfs:subPropertyOf <"+prop+"> } limit "+LIMIT,"?sub");
+		System.out.println("getting super properties...");
+		Set<String> superProperties	= answerSet(endpoint,"select ?sup where {<"+prop+"> rdfs:subPropertyOf ?sup} limit "+LIMIT,"?sup");	
+		System.out.println("getting other properties...");
 		Set<String> otherProperties	= answerSet(endpoint,"select ?p where {?s <"+prop+"> ?o. ?s ?p ?o. filter (?p!=<"+prop+">)} limit "+LIMIT+"","?p");
-		Set<String> sameLabel 		= answerSet(endpoint,"select ?p where {<"+prop+"> rdfs:label ?l. ?p rdfs:label ?l.}","?p");		
+		System.out.println("getting same label properties...");
+		Set<String> sameLabel 		= answerSet(endpoint,"select ?p where {<"+prop+"> rdfs:label ?l. ?p rdfs:label ?l.} limit "+LIMIT,"?p");		
 		Set[] subSets = {subProperties,superProperties,otherProperties,sameLabel};
 		Set<String> resources = new HashSet<String>();
-		for(Set subSet : subSets) resources.addAll(subSet);
+		for(Set<String> subSet : subSets) resources.addAll(subSet);
 		//		System.out.println(subClasses);
 		//		System.out.println(superClasses);
 		//		System.out.println(otherClasses);

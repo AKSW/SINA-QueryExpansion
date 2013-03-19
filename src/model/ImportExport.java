@@ -66,12 +66,15 @@ public class ImportExport
 		}
 	}
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();
+		int i=0;
 		for(String keyword: qald2.keySet())
 		{
-			String resource = qald2.get(keyword);			
+			i++;
+			String resource = qald2.get(keyword);
+			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+" :"+keyword);
 			keywordToLabel.putAll(keyword,CorrelatedResources.correlatedDBpediaResourceLabels(resource));			
 		}
 		String s = multiMapToStringCsvTsv(qald2,keywordToLabel);
