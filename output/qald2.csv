@@ -1,0 +1,18 @@
+born	dbo:birthPlace	home town,PLACE OF BIRTH,birth place,nationality,death place,PLACE OF DEATH,countryofbirth,origin,placeofbirth
+married to	dbp:spouse	constituency,issue,term start,children,lieutenant,styles,political office,better half,rows,spouse,death date,DATE OF DEATH,partner,birth date,years,married person,mate
+governed	dbp:rulingParty	Partei,leader party,ruling,party
+highest	dbo:elevation	elevation (μ),elevation,May low C,elevation m,area total km
+join the EU	dbp:accessioneudate	ethnic groups,area magnitude,Aug rain days,accessionEUdate,established date,footnotes,percent water,Jun precipitation days,Jun rain days,Jul precipitation mm,HDI rank,HDI,Aug precipitation days
+higher	dbp:elevationM	elevation m
+daughter	dbo:child	youngster,successor,birth place,nestling,minor,queen,children,Child,kid,child,tike,PLACE OF DEATH,spouse,small fry,baby,offspring,occupation,PLACE OF BIRTH,shaver,tyke,tiddler,nipper,consort,residence,death place,fry
+wrote	dbo:author	author,source,developer,owner,generator,language,license,writer,Artist,publisher
+movie	dbo:starring	editing,producer,director,writer,starring,creator
+die from 	dbo:deathCause	death cause,List of causes of death by rate,data
+alive	dbo:deathDate	reign,death date,DATE OF DEATH
+war	dbo:battle	SHORT DESCRIPTION,battle,fight,struggle,conflict,Battle,battles,country,engagement
+written 	dbo:author	author,source,developer,owner,generator,language,writer,license,Artist,publisher
+created	dbo:author	author,source,developer,owner,generator,language,writer,license,Artist,publisher
+wife	dbo:spouse	PLACE OF BIRTH,birth place,successor,before,parent,better half,party,known for,after,child,regent,predecessor,alma mater,PLACE OF DEATH,death place,spouse,partner,married person,mate,prime minister,primeminister
+when	dbo:date	HbMdate,particular date,escort,day of the month,date,appointment,engagement
+own	dbo:keyPerson	key person,division,key people,region served,founded by,location country,founder
+tall	dbo:height	elevation (μ),secondary armament,sub-wins,ru clubpoints,length (μ),nationalcaps,DATE OF BIRTH,width (μ),crew,children,longd,engine petrol,launches,height (μ),total launches,ru provincecaps,mainspan (μ),mma subwin,pcupdate,wheelbase (μ),weight (g),ship beam (μ),ship draft (μ),latm
