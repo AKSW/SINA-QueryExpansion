@@ -1,6 +1,9 @@
 package model;
 
-public class FeatureVector {
+import java.util.HashMap;
+import java.util.TreeMap;
+
+public class FeatureVector extends TreeMap<String,Boolean>{
 	
 	private boolean synonym = false;
 	private boolean hyponym = false;
