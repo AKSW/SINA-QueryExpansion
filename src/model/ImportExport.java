@@ -14,6 +14,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
+import model.FeatureVector.Feature;
+
 import org.apache.commons.collections15.MultiMap;
 import org.apache.commons.collections15.multimap.MultiHashMap;
 import org.apache.commons.io.FileUtils;
@@ -92,26 +94,19 @@ public class ImportExport
 		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f))))
 		{
 			out.println("@RELATION qald");
-			{
-				FeatureVector v = vectors.iterator().next();
-				for(String s: v.keySet())
+			{				
+				for(Feature feature: Feature.values())
 				{
-					out.println("@ATTRIBUTE "+s+" NUMERIC");				
+					out.println("@ATTRIBUTE "+feature+" NUMERIC");				
 				}
 			}
 			out.println("@DATA");
 			for(FeatureVector v: vectors)
 			{
-				StringBuilder sb = new StringBuilder();
-				for(String s: v.keySet())
-				{
-					sb.append(v.get(s).booleanValue()?"1":"0");
-				}
-				out.println(sb.substring(0,sb.length()-1));
+				out.println(v);
 			}
 		}
 	}
-
 
 	/** Calculate the correlated resources for the qald2 data and write them to files.
 	 * TODO?: Resources are randomly sorted in their processing order and written each to their own file if it doesn't exist yet because the method takes really long.   

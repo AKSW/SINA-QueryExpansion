@@ -1,14 +1,17 @@
 package model;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import model.FeatureVector.Feature;
 import net.didion.jwnl.JWNLException;
 
 public class main {
@@ -169,66 +172,10 @@ public class main {
 	for (String s:ComprehensiveSet)
 	{
 		FeatureVector fv = new FeatureVector();
-		
-		if(synSet.contains(s))
-		{
-			fv.setsynonym(true);
-		}
-		
-		if(hyponymSet.contains(s))
-		{
-			fv.sethyponym(true);
-		}
-		
-		if(hyperSet.contains(s))
-		{
-			fv.sethypernym(true);
-		}
-		
-		if(synSet.contains(s))
-		{
-			fv.setsynonym(true);
-		}
-		
-		if(SameAsLabelSet.contains(s))
-		{
-			fv.setsameAs(true);
-		}
-		
-		if(SeeAlsoLabelSet.contains(s))
-		{
-			fv.setseeAlso(true);
-		}
-		
-		if(EquivalentLabeSet.contains(s))
-		{
-			fv.setequivalent(true);
-		}
-		
-		if(SuperResourceLabelSet.contains(s))
-		{
-			fv.setsuperresource(true);
-		}
-		
-		if(SubResourceLabelsub.contains(s))
-		{
-			fv.setsubresource(true);
-		}
-		
-		if(BroaderLabelSet.contains(s))
-		{
-			fv.setskosbroader(true);
-		}
-		
-		if(NarrowerLabelSet.contains(s))
-		{
-			fv.setskosnarrower(true);
-		}
-		
-		if(RelatedPropertyLabelSet.contains(s))
-		{
-			fv.setskosrelatedproperty(true);
-		}
+		List<Set> sets = Arrays.asList(
+				new Set[] {synSet,hyponymSet,hyperSet,SameAsLabelSet,SeeAlsoLabelSet,EquivalentLabeSet,SuperResourceLabelSet,SubResourceLabelsub,
+						BroaderLabelSet,NarrowerLabelSet,RelatedPropertyLabelSet});		
+		for(int i=0;i<Feature.values().length;i++) {if(sets.get(i).contains(s)) fv.add(Feature.values()[i]);}
 		
 		Comprehensivemap.put(s, fv);
 	}
@@ -237,7 +184,7 @@ public class main {
 	Entry<String, FeatureVector> entry = iter.next();
     String word =entry.getKey();
     FeatureVector FV = entry.getValue();
-    String vector = FV.printFeatureVector(); 
+    String vector = FV.toString(); 
      System.out.println(word + "   " + vector);
         
 	}
