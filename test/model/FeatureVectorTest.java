@@ -1,9 +1,6 @@
 package model;
 
-import static org.junit.Assert.*;
-
 import model.FeatureVector.Feature;
-
 import org.junit.Test;
 
 public class FeatureVectorTest

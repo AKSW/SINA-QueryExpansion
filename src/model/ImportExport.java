@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -25,14 +24,15 @@ public class ImportExport
 	/** Generates a tab separated (tsv) String with keyword, resource, and correlated resource label columns.
 	 * Multiple correlated resource labels are separated by commas. 
 	 *To save it to a file use FileUtils.writeStringToFile(File,String)*/
-	public static String multiMapToStringTsvCsv(Map<String,String> keywordToResource , MultiMap<String,String> keywordToLabel)
+	public static String multiMapToStringTsvCsv(MultiMap<String,String> keywordToResource , MultiMap<String,String> keywordToLabel)
 	{
 		StringBuffer sb = new StringBuffer();
 		for(String keyword: keywordToLabel.keySet())
 		{				
 			String labels = keywordToLabel.get(keyword).toString();				
 			String resource = "";
-			if(keywordToResource!=null&&keywordToResource.containsKey(keyword)) resource=keywordToResource.get(keyword);
+			if(keywordToResource!=null&&keywordToResource.containsKey(keyword))
+				{resource=keywordToResource.get(keyword).toString().substring(1,labels.length()-1).replace(", ",",");}
 			sb.append(keyword+'\t'+resource+'\t'+labels.substring(1,labels.length()-1).replace(", ",",")+"\n");				
 		}
 		return sb.substring(0,sb.length()-1);
@@ -68,7 +68,7 @@ public class ImportExport
 
 
 
-	static Map<String,String> qald2 = new HashMap<String,String>();
+	static MultiMap<String,String> qald2 = new MultiHashMap<String,String>();
 	static {
 		for(String[] qald2Entry : qald2Array)
 		{
@@ -113,26 +113,54 @@ public class ImportExport
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
-		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();
-		int i=0;
-		for(String keyword: qald2.keySet())
+		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
+		MultiMap<String,String> keywordToResource = new MultiHashMap<>();
+		try(Scanner in = new Scanner(new File("input/qald2012train.tsv")))
 		{
-			i++;
-			String resource = qald2.get(keyword);
-			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+": "+keyword);
-			Set<String> resources;
-			try
+			int i=0;
+			while(in.hasNextLine())
 			{
-				resources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
-				keywordToLabel.putAll(keyword,resources);
+				i++;
+				String[] tokens = in.nextLine().trim().split("\t");
+				String keyword = tokens[0];
+				System.out.println("processing keyword "+i+": "+keyword);
+				Set<String> resources = new HashSet<>(); 
+				for(int j=1;j<tokens.length;j++)
+				{
+					String resource=tokens[j];
+					resources.add(resource);
+					try
+					{
+						Set<String> correlatedResources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
+						keywordToLabel.putAll(keyword,correlatedResources);
+					}
+					catch(TimeoutException e)
+					{
+						keywordToLabel.put(keyword,"TIMEOUT");
+					}
+				}
+				keywordToResource.putAll(keyword,resources);
 			}
-			catch(TimeoutException e)
-			{
-				keywordToLabel.put(keyword,"TIMEOUT");
-			}			
 		}
-		String s = multiMapToStringTsvCsv(qald2,keywordToLabel);
-		FileUtils.writeStringToFile(new File("qald2.csv"),s);
+//		int i=0;
+//		for(String keyword: qald2.keySet())
+//		{
+//			i++;
+//			String resource = qald2.get(keyword);
+//			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+": "+keyword);
+//			Set<String> resources;
+//			try
+//			{
+//				resources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
+//				keywordToLabel.putAll(keyword,resources);
+//			}
+//			catch(TimeoutException e)
+//			{
+//				keywordToLabel.put(keyword,"TIMEOUT");
+//			}			
+//		}
+		String s = multiMapToStringTsvCsv(keywordToResource,keywordToLabel);
+		FileUtils.writeStringToFile(new File("qald.tsv"),s);
 	}
 
 }
