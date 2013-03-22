@@ -21,7 +21,7 @@ public class FeatureVector
 	public EnumSet<Feature> values = EnumSet.noneOf(Feature.class);
 
 	public boolean add(Feature f)		{return values.add(f);}
-	public boolean remove(Feature f)	{return values.add(f);}			
+	public boolean remove(Feature f)	{return values.remove(f);}			
 
 	@Override public String toString()			
 	{
