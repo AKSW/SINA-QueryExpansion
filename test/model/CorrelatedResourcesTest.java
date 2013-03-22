@@ -5,30 +5,31 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
 public class CorrelatedResourcesTest
 {
 	@Test
-	public void testCorrelatedDBpediaResourceLabels() throws InterruptedException
+	public void testCorrelatedDBpediaResourceLabels() throws InterruptedException, TimeoutException
 	{
-		System.out.println(CorrelatedResources.correlatedDBpediaResourceLabels("http://dbpedia.org/ontology/Country"));
+		System.out.println(CorrelatedResources.correlatedDBpediaResourceLabels("dbo:author"));
 	}
 
 	@Test	
 	public void testResources()
 	{
 		assertTrue(
-				CorrelatedResources.answerSet("http://dbpedia.org/sparql","select distinct ?s where {?s a dbpedia-owl:Country. ?s rdfs:label ?l. ?l bif:contains 'Germany' }","?s")
+				CorrelatedResources.answerSet("select distinct ?s where {?s a dbpedia-owl:Country. ?s rdfs:label ?l. ?l bif:contains 'Germany' }")
 				.contains("http://dbpedia.org/resource/Germany")
 				);
 	}
 
-	@Test
-	public void testCorrelatedResourcesForClass()
+//	@Test
+	public void testCorrelatedResourcesForClass() throws InterruptedException
 	{
-		Set<String> resources = CorrelatedResources.correlatedResourcesForClass("http://dbpedia.org/sparql","http://dbpedia.org/ontology/Country");
+		Set<String> resources = CorrelatedResources.correlatedResourcesForClass("http://dbpedia.org/ontology/Country");
 		/*sed "s|, |\",\n\"|g" /tmp/tmp > /tmp/tmp2
 		 *sort -r /tmp/tmp2 | head -20*/
 		Set<String> subSet = new HashSet<>(Arrays.asList(new String[] {"http://xmlns.com/foaf/0.1/Person",			
@@ -43,10 +44,10 @@ public class CorrelatedResourcesTest
 		assertTrue(subSet.size()<2);		
 	}
 	
-	@Test
-	public void testCorrelatedResourcesForProperty()
+//	@Test
+	public void testCorrelatedResourcesForProperty() throws InterruptedException
 	{
-		Set<String> resources = CorrelatedResources.correlatedResourcesForProperty("http://dbpedia.org/sparql","http://dbpedia.org/property/birthPlace");
+		Set<String> resources = CorrelatedResources.correlatedResourcesForProperty("http://dbpedia.org/property/birthPlace");
 		Set<String> subSet = new HashSet<>(Arrays.asList(new String[] {
 				"http://dbpedia.org/property/termStart", "http://dbpedia.org/property/dateOfBirth", "http://dbpedia.org/property/dateOfDeath", "http://dbpedia.org/property/deathPlace", "http://dbpedia.org/property/termEnd", "http://dbpedia.org/property/rows", "http://dbpedia.org/property/placeOfBirth"
 		}));

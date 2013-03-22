@@ -1,9 +1,18 @@
 package model;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.collections15.MultiMap;
 import org.apache.commons.collections15.multimap.MultiHashMap;
@@ -11,14 +20,11 @@ import org.apache.commons.io.FileUtils;
 // TODO: tidy up the class a bit
 public class ImportExport
 {	
-	/** Generates a string of the following format:
-	 *<pre>key1(tab)resource(tab)value11,value12,...value1m
-	 *...
-	 *keyn(tab)valuen1,valuen2,...valuenm</pre>
+	/** Generates a tab separated (tsv) String with keyword, resource, and correlated resource label columns.
+	 * Multiple correlated resource labels are separated by commas. 
 	 *To save it to a file use FileUtils.writeStringToFile(File,String)*/
-	public static String multiMapToStringCsvTsv(Map<String,String> keywordToResource , MultiMap<String,String> keywordToLabel)
+	public static String multiMapToStringTsvCsv(Map<String,String> keywordToResource , MultiMap<String,String> keywordToLabel)
 	{
-
 		StringBuffer sb = new StringBuffer();
 		for(String keyword: keywordToLabel.keySet())
 		{				
@@ -29,7 +35,7 @@ public class ImportExport
 		}
 		return sb.substring(0,sb.length()-1);
 	}
-	
+
 	static final String[][] qald2Array =
 		{
 		{"daughter",    "dbo:child"},
@@ -57,7 +63,9 @@ public class ImportExport
 		{"highest",     "dbo:elevation"},
 		{"born",        "dbo:birthPlace"}
 		};
-	
+
+
+
 	static Map<String,String> qald2 = new HashMap<String,String>();
 	static {
 		for(String[] qald2Entry : qald2Array)
@@ -66,6 +74,48 @@ public class ImportExport
 		}
 	}
 
+	/** @see multiMapToStringTsvCsv. */
+	public static MultiMap<String,String> readTsvCsvToMultiMap(File f) throws FileNotFoundException
+	{
+		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();
+		try(Scanner in = new Scanner(f))
+		{
+			String[] tokens = in.nextLine().split("\t");
+			String[] labels = tokens[2].split(",");
+			keywordToLabel.putAll(tokens[0],Arrays.asList(labels));
+		}
+		return keywordToLabel;
+	}
+
+	public static void writeArff(File f, Collection<FeatureVector> vectors) throws IOException
+	{
+		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f))))
+		{
+			out.println("@RELATION qald");
+			{
+				FeatureVector v = vectors.iterator().next();
+				for(String s: v.keySet())
+				{
+					out.println("@ATTRIBUTE "+s+" NUMERIC");				
+				}
+			}
+			out.println("@DATA");
+			for(FeatureVector v: vectors)
+			{
+				StringBuilder sb = new StringBuilder();
+				for(String s: v.keySet())
+				{
+					sb.append(v.get(s).booleanValue()?"1":"0");
+				}
+				out.println(sb.substring(0,sb.length()-1));
+			}
+		}
+	}
+
+
+	/** Calculate the correlated resources for the qald2 data and write them to files.
+	 * TODO?: Resources are randomly sorted in their processing order and written each to their own file if it doesn't exist yet because the method takes really long.   
+	 */
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();
@@ -74,12 +124,20 @@ public class ImportExport
 		{
 			i++;
 			String resource = qald2.get(keyword);
-			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+" :"+keyword);
-			keywordToLabel.putAll(keyword,CorrelatedResources.correlatedDBpediaResourceLabels(resource));			
+			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+": "+keyword);
+			Set<String> resources;
+			try
+			{
+				resources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
+				keywordToLabel.putAll(keyword,resources);
+			}
+			catch(TimeoutException e)
+			{
+				keywordToLabel.put(keyword,"TIMEOUT");
+			}			
 		}
-		String s = multiMapToStringCsvTsv(qald2,keywordToLabel);
-		FileUtils.writeStringToFile(new File("qald.csv"),s);
+		String s = multiMapToStringTsvCsv(qald2,keywordToLabel);
+		FileUtils.writeStringToFile(new File("qald2.csv"),s);
 	}
-	
 
 }

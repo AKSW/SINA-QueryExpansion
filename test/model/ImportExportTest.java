@@ -16,7 +16,7 @@ public class ImportExportTest
 		map.putAll("word",Arrays.asList(new String[]{"schmörd","börd"}));
 		map.putAll("wort",Arrays.asList(new String[]{"schmört","bört"}));
 				
-		String s = ImportExport.multiMapToStringCsvTsv(null,map);
+		String s = ImportExport.multiMapToStringTsvCsv(null,map);
 		String t = "word		schmörd,börd\nwort		schmört,bört";	
 		assertTrue(s.equals(t));
 	}
