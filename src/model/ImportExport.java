@@ -32,7 +32,10 @@ public class ImportExport
 			String labels = keywordToLabel.get(keyword).toString();				
 			String resource = "";
 			if(keywordToResource!=null&&keywordToResource.containsKey(keyword))
-				{resource=keywordToResource.get(keyword).toString().substring(1,labels.length()-1).replace(", ",",");}
+			{				
+				resource = keywordToResource.get(keyword).toString(); 
+				resource=resource.substring(1,resource.length()-1).replace(", ",",");
+			}
 			sb.append(keyword+'\t'+resource+'\t'+labels.substring(1,labels.length()-1).replace(", ",",")+"\n");				
 		}
 		return sb.substring(0,sb.length()-1);
