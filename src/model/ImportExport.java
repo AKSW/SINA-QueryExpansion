@@ -85,85 +85,93 @@ public class ImportExport
 		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();
 		try(Scanner in = new Scanner(f))
 		{
-			String[] tokens = in.nextLine().split("\t");
-			String[] labels = tokens[2].split(",");
-			keywordToLabel.putAll(tokens[0],Arrays.asList(labels));
+			while(in.hasNextLine())
+			{
+				String line = in.nextLine();
+				if(line==null) {continue;}				
+				line=line.trim();
+				if(line.isEmpty()) {continue;}
+				String[] tokens = line.split("\t");
+				String[] labels = tokens[2].split(",");
+				keywordToLabel.putAll(tokens[0],Arrays.asList(labels));
+			}
 		}
 		return keywordToLabel;
 	}
+	
 
-	public static void writeArff(File f, Collection<FeatureVector> vectors) throws IOException
+public static void writeArff(File f, Collection<FeatureVector> vectors) throws IOException
+{
+	try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f))))
 	{
-		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f))))
-		{
-			out.println("@RELATION qald");
-			{				
-				for(Feature feature: Feature.values())
-				{
-					out.println("@ATTRIBUTE "+feature+" NUMERIC");				
-				}
-			}
-			out.println("@DATA");
-			for(FeatureVector v: vectors)
+		out.println("@RELATION qald");
+		{				
+			for(Feature feature: Feature.values())
 			{
-				out.println(v);
+				out.println("@ATTRIBUTE "+feature+" NUMERIC");				
 			}
 		}
-	}
-
-	/** Calculate the correlated resources for the qald2 data and write them to files.
-	 * TODO?: Resources are randomly sorted in their processing order and written each to their own file if it doesn't exist yet because the method takes really long.   
-	 */
-	public static void main(String[] args) throws IOException, InterruptedException
-	{
-		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
-		MultiMap<String,String> keywordToResource = new MultiHashMap<>();
-		try(Scanner in = new Scanner(new File("input/qald2012train.tsv")))
+		out.println("@DATA");
+		for(FeatureVector v: vectors)
 		{
-			int i=0;
-			while(in.hasNextLine())
-			{
-				i++;
-				String[] tokens = in.nextLine().trim().split("\t");
-				String keyword = tokens[0];
-				System.out.println("processing keyword "+i+": "+keyword);
-				Set<String> resources = new HashSet<>(); 
-				for(int j=1;j<tokens.length;j++)
-				{
-					String resource=tokens[j];
-					resources.add(resource);
-					try
-					{
-						Set<String> correlatedResources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
-						keywordToLabel.putAll(keyword,correlatedResources);
-					}
-					catch(TimeoutException e)
-					{
-						keywordToLabel.put(keyword,"TIMEOUT");
-					}
-				}
-				keywordToResource.putAll(keyword,resources);
-			}
+			out.println(v);
 		}
-//		int i=0;
-//		for(String keyword: qald2.keySet())
-//		{
-//			i++;
-//			String resource = qald2.get(keyword);
-//			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+": "+keyword);
-//			Set<String> resources;
-//			try
-//			{
-//				resources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
-//				keywordToLabel.putAll(keyword,resources);
-//			}
-//			catch(TimeoutException e)
-//			{
-//				keywordToLabel.put(keyword,"TIMEOUT");
-//			}			
-//		}
-		String s = multiMapToStringTsvCsv(keywordToResource,keywordToLabel);
-		FileUtils.writeStringToFile(new File("qald.tsv"),s);
 	}
+}
+
+/** Calculate the correlated resources for the qald2 data and write them to files.
+ * TODO?: Resources are randomly sorted in their processing order and written each to their own file if it doesn't exist yet because the method takes really long.   
+ */
+public static void main(String[] args) throws IOException, InterruptedException
+{
+	MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
+	MultiMap<String,String> keywordToResource = new MultiHashMap<>();
+	try(Scanner in = new Scanner(new File("input/qald2012train.tsv")))
+	{
+		int i=0;
+		while(in.hasNextLine())
+		{
+			i++;
+			String[] tokens = in.nextLine().trim().split("\t");
+			String keyword = tokens[0];
+			System.out.println("processing keyword "+i+": "+keyword);
+			Set<String> resources = new HashSet<>(); 
+			for(int j=1;j<tokens.length;j++)
+			{
+				String resource=tokens[j];
+				resources.add(resource);
+				try
+				{
+					Set<String> correlatedResources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
+					keywordToLabel.putAll(keyword,correlatedResources);
+				}
+				catch(TimeoutException e)
+				{
+					keywordToLabel.put(keyword,"TIMEOUT");
+				}
+			}
+			keywordToResource.putAll(keyword,resources);
+		}
+	}
+	//		int i=0;
+	//		for(String keyword: qald2.keySet())
+	//		{
+	//			i++;
+	//			String resource = qald2.get(keyword);
+	//			System.out.println("processing keyword "+i+"/"+qald2.keySet().size()+": "+keyword);
+	//			Set<String> resources;
+	//			try
+	//			{
+	//				resources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
+	//				keywordToLabel.putAll(keyword,resources);
+	//			}
+	//			catch(TimeoutException e)
+	//			{
+	//				keywordToLabel.put(keyword,"TIMEOUT");
+	//			}			
+	//		}
+	String s = multiMapToStringTsvCsv(keywordToResource,keywordToLabel);
+	FileUtils.writeStringToFile(new File("qald.tsv"),s);
+}
 
 }
