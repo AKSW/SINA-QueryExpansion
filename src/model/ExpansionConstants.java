@@ -10,7 +10,7 @@ public class ExpansionConstants {
 	public static final int TYPE_PROPERTY       = 1;
 	
 	
-	public static final String LODendpoint ="";
+	public static final String LODendpoint ="http://lod.openlinksw.com/sparql";
 	
 	
 }

@@ -1,7 +1,9 @@
 package model;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +12,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.collections15.MultiMap;
+import org.apache.commons.collections15.multimap.MultiHashMap;
 
 import model.FeatureVector.Feature;
 import net.didion.jwnl.JWNLException;
@@ -25,7 +30,10 @@ public class main {
 		
 		ReasoningOverLOD ro = new ReasoningOverLOD();
 		WordNetManagement wm = new WordNetManagement();
-		String pattern="wife";
+		CorrelatedResources cr = new CorrelatedResources();
+		ImportExport IE = new ImportExport();
+		
+		String pattern="battle";
 		
 		Map<String,FeatureVector> Comprehensivemap 		    =           new HashMap<String, FeatureVector>();
 		Set<String> ComprehensiveSet				    	=			new TreeSet<String>();
@@ -34,15 +42,35 @@ public class main {
 		Set<String> EquivalentLabeSet						=			new TreeSet<String>();
 		Set<String> SuperResourceLabelSet					=			new TreeSet<String>();
 		Set<String> SubResourceLabelsub						=			new TreeSet<String>();
-		Set<String> BroaderLabelSet						=			new TreeSet<String>();
+		Set<String> BroaderLabelSet						    =			new TreeSet<String>();
 		Set<String> NarrowerLabelSet						=			new TreeSet<String>();
-		Set<String> RelatedPropertyLabelSet						=			new TreeSet<String>();
+		Set<String> RelatedPropertyLabelSet					=			new TreeSet<String>();
 		SortedSet<String> synSet 							= 			new TreeSet<String>();
 		SortedSet<String> hyponymSet					    = 			new TreeSet<String>();
 		SortedSet<String> hyperSet 							= 			new TreeSet<String>();
+		Set<String> CorrespondingSet 						= 			new TreeSet<String>();
+		MultiMap<String,String> RelatedPatterns			    = new MultiHashMap<>();
+		
+		File f =new File("output/qald.tsv");
+		try {
+			RelatedPatterns=IE.readTsvCsvToMultiMap(f);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Iterator<Entry<String, Collection<String>>> iter = RelatedPatterns.entrySet().iterator();
+		while (iter.hasNext()) {
+		Entry<String, Collection<String>> entry = iter.next();
+	    String word =entry.getKey();
+	    Collection<String> FV = entry.getValue();
+	    String vector = FV.toString(); 
+	     System.out.println(word + "   " + vector);
+	        
+		}
 		
 		
-		SameAsLabelSet.addAll(ro.getLabelsViaSameAsOverLOD(pattern));
+		/*SameAsLabelSet.addAll(ro.getLabelsViaSameAsOverLOD(pattern));
 		System.out.println(" %%%%%%%%%%%%%% the list of SameAs labels %%%%%%%%%%%%%%");
 		for (String s:SameAsLabelSet)
 		{
@@ -167,9 +195,9 @@ public class main {
 		System.out.println(" size of comprehensive set is:" + ComprehensiveSet.size());
 		
 
+	*/
 	
-	
-	for (String s:ComprehensiveSet)
+/*	for (String s:ComprehensiveSet)
 	{
 		FeatureVector fv = new FeatureVector();
 		List<Set> sets = Arrays.asList(
@@ -189,7 +217,7 @@ public class main {
         
 	}
 	
-	
+*/	
 	
 	
 	}
