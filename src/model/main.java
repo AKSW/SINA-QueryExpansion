@@ -49,11 +49,11 @@ public class main {
 		SortedSet<String> hyponymSet					    = 			new TreeSet<String>();
 		SortedSet<String> hyperSet 							= 			new TreeSet<String>();
 		Set<String> CorrespondingSet 						= 			new TreeSet<String>();
-		MultiMap<String,String> RelatedPatterns			    = new MultiHashMap<>();
+		MultiMap<String,String> RelatedPatterns		    = new MultiHashMap<>();
 		
 		File f =new File("output/qald.tsv");
 		try {
-			RelatedPatterns=IE.readTsvCsvToMultiMap(f);
+			RelatedPatterns.putAll(IE.readTsvCsvToMultiMap(f));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,6 +69,8 @@ public class main {
 	        
 		}
 		
+	
+		System.out.println(" size of the correlated resource" + RelatedPatterns.size());
 		
 		/*SameAsLabelSet.addAll(ro.getLabelsViaSameAsOverLOD(pattern));
 		System.out.println(" %%%%%%%%%%%%%% the list of SameAs labels %%%%%%%%%%%%%%");
