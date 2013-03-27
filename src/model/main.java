@@ -2,6 +2,8 @@ package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,8 +50,10 @@ public class main {
 		SortedSet<String> synSet 							= 			new TreeSet<String>();
 		SortedSet<String> hyponymSet					    = 			new TreeSet<String>();
 		SortedSet<String> hyperSet 							= 			new TreeSet<String>();
-		Set<String> CorrespondingSet 						= 			new TreeSet<String>();
-		MultiMap<String,String> RelatedPatterns		    = new MultiHashMap<>();
+		Set<String> CorrespondingLabelSet 					= 			new TreeSet<String>();
+		MultiMap<String,String> RelatedPatterns		  	    = 			new MultiHashMap<>();
+		ArrayList<FeatureVector> vectors 					=           new ArrayList<FeatureVector>();
+		
 		
 		File f =new File("output/qald.tsv");
 		try {
@@ -62,17 +66,19 @@ public class main {
 		Iterator<Entry<String, Collection<String>>> iter = RelatedPatterns.entrySet().iterator();
 		while (iter.hasNext()) {
 		Entry<String, Collection<String>> entry = iter.next();
-	    String word =entry.getKey();
+		String word =entry.getKey();
 	    Collection<String> FV = entry.getValue();
+	    CorrespondingLabelSet.addAll(FV);
+	    CorrespondingLabelSet.add(word);
 	    String vector = FV.toString(); 
-	     System.out.println(word + "   " + vector);
+	    System.out.println(word + "   " + vector);
 	        
 		}
 		
 	
 		System.out.println(" size of the correlated resource" + RelatedPatterns.size());
 		
-		/*SameAsLabelSet.addAll(ro.getLabelsViaSameAsOverLOD(pattern));
+		SameAsLabelSet.addAll(ro.getLabelsViaSameAsOverLOD(pattern));
 		System.out.println(" %%%%%%%%%%%%%% the list of SameAs labels %%%%%%%%%%%%%%");
 		for (String s:SameAsLabelSet)
 		{
@@ -118,7 +124,9 @@ public class main {
 		}
 		ComprehensiveSet.addAll(SubResourceLabelsub);
 		
-		// --------------------------------------------------------------------------------------
+		// ---------------------------------- Synonym ----------------------------------------------------
+		
+		
 		try {
 			synSet.addAll(wm.getSynonyms(pattern));
 		} catch (FileNotFoundException | JWNLException e) {
@@ -141,7 +149,7 @@ public class main {
 			e.printStackTrace();
 		}
 		
-		System.out.println(" the list of labels hyponyms");
+		System.out.println("%%%%%%%%%%%%%%%%%%%%% the list of labels hyponyms %%%%%%%%%%%%%%%%%");
 		for (String s:hyponymSet)
 		{
 			System.out.println(s);
@@ -156,12 +164,13 @@ public class main {
 			e.printStackTrace();
 		}
 		
-		System.out.println(" the list of labels hypenyms");
+		System.out.println("%%%%%%%%%%%%%%%%%%%%% the list of labels hypenyms %%%%%%%%%%%%%%%%%%%%%%");
 		for (String s:hyperSet)
 		{
 			System.out.println(s);
 		}
 		ComprehensiveSet.addAll(hyperSet);
+		
 		
 		//-------------------------------  list of broader concepts ------------------------------------------   
 				
@@ -197,30 +206,39 @@ public class main {
 		System.out.println(" size of comprehensive set is:" + ComprehensiveSet.size());
 		
 
-	*/
 	
-/*	for (String s:ComprehensiveSet)
+		
+		
+	
+	
+	for (String s:ComprehensiveSet)
 	{
 		FeatureVector fv = new FeatureVector();
 		List<Set> sets = Arrays.asList(
 				new Set[] {synSet,hyponymSet,hyperSet,SameAsLabelSet,SeeAlsoLabelSet,EquivalentLabeSet,SuperResourceLabelSet,SubResourceLabelsub,
-						BroaderLabelSet,NarrowerLabelSet,RelatedPropertyLabelSet});		
+						BroaderLabelSet,NarrowerLabelSet,RelatedPropertyLabelSet,CorrespondingLabelSet});		
 		for(int i=0;i<Feature.values().length;i++) {if(sets.get(i).contains(s)) fv.add(Feature.values()[i]);}
 		
 		Comprehensivemap.put(s, fv);
 	}
-	Iterator<Entry<String, FeatureVector>> iter = Comprehensivemap.entrySet().iterator();
-	while (iter.hasNext()) {
-	Entry<String, FeatureVector> entry = iter.next();
+	Iterator<Entry<String, FeatureVector>> iter1 = Comprehensivemap.entrySet().iterator();
+	while (iter1.hasNext()) {
+	Entry<String, FeatureVector> entry = iter1.next();
     String word =entry.getKey();
     FeatureVector FV = entry.getValue();
     String vector = FV.toString(); 
-     System.out.println(word + "   " + vector);
+    vectors.add(FV);
+    System.out.println(word + "   " + vector);
         
 	}
 	
-*/	
-	
+	File first = new File ("first.arff");
+	try {
+		IE.writeArff(first, vectors);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	
 	}
 }

@@ -16,7 +16,10 @@ public class FeatureVector
 		SUBRESOURCE,
 		SKOSBROADER,
 		SKOSNARROWER,
-		SKOSRELATEDPROPERTY,}
+		SKOSRELATEDPROPERTY,
+		CorrespondingLabels,}
+	
+	
 
 	public EnumSet<Feature> values = EnumSet.noneOf(Feature.class);
 
