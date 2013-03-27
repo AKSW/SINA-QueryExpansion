@@ -19,10 +19,9 @@ public class ImportExportTest
 		MultiMap<String,String> map = ImportExport.readTsvCsvToMultiMap(new File("output/qald.tsv"));
 		assertTrue(map.keySet().size()>10);
 		assertTrue(new TreeSet<String>(map.get("spokenin")).toString().equals("[Language, Languages, OfficialLang, language, official language, official languages, region, spoken in]"));
-		assertTrue(new TreeSet<String>(map.get("produce")).toString().equals("[Caption, Name, designer, designer company, manufacturer, model, origin, related, sequence, service, title]"));
+		assertTrue(new TreeSet<String>(map.get("produce")).toString().equals("[Caption, Name, designer, designer company, manufacturer, model, origin, related, sequence, service, title]"));		
 	}
 
-	
 	@Test
 	public void testMultiMapToStringCsvTsv()
 	{

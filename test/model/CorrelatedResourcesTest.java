@@ -18,12 +18,26 @@ public class CorrelatedResourcesTest
 	}
 
 	@Test	
-	public void testResources()
+	public void testAnswerSet()
 	{
 		assertTrue(
 				CorrelatedResources.answerSet("select distinct ?s where {?s a dbpedia-owl:Country. ?s rdfs:label ?l. ?l bif:contains 'Germany' }")
 				.contains("http://dbpedia.org/resource/Germany")
 				);
+	}
+
+	@Test	
+	public void testGetResourcesMultiThreaded() throws InterruptedException
+	{
+		String[] queries = {"select ?i {?i a dbpedia-owl:Country} limit 1","select ?i {?i a dbpedia-owl:City} limit 1"};
+		assertTrue(CorrelatedResources.getResourcesMultiThreaded(queries).size()==2);
+	}
+
+	@Test	
+	public void testGetResourcesUnion() throws InterruptedException
+	{
+		String[] queries = {"select ?i {?i a dbpedia-owl:Country} limit 1","select ?i {?i a dbpedia-owl:City} limit 1"};		
+		assertTrue(CorrelatedResources.getResourcesUnion(queries, "?i").size()==2);
 	}
 
 //	@Test

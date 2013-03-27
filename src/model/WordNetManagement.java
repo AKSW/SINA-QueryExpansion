@@ -1,6 +1,7 @@
 package model;
 
 import static model.WordNetManagement.DictionaryGetter.getDict;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -13,8 +14,6 @@ import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
 import net.didion.jwnl.data.POS;
-import net.didion.jwnl.data.Pointer;
-import net.didion.jwnl.data.PointerType;
 import net.didion.jwnl.data.PointerUtils;
 import net.didion.jwnl.data.Synset;
 import net.didion.jwnl.data.Word;
@@ -100,7 +99,6 @@ public class WordNetManagement
 		for(Synset synset : getSynsets(word)) {lemmas.addAll(getSynsetLemmas(synset));}
 		return lemmas;
 	}
-	
 
 	public static void main(String[] args) throws FileNotFoundException, JWNLException
 	{

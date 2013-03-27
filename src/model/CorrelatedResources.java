@@ -22,6 +22,7 @@ public class CorrelatedResources
 	static final String ENDPOINT = "http://dbpedia.org/sparql";
 	static final int LIMIT = 100;
 
+	/** gets a set of the first bindings of each row of the result of a sparql query. */
 	protected static Set<String> answerSet(String query)
 	{		
 		Set<String> resources = new HashSet<String>();
@@ -35,6 +36,45 @@ public class CorrelatedResources
 		return resources;
 	}
 
+	protected static Set<String> getResourcesUnion(final String[] queries, String var) throws InterruptedException
+	{
+		if(!(var.charAt(0)=='?')) {var='?'+var;}
+		StringBuilder fullQuery = new StringBuilder("select "+var+" {");		
+		for(String query: queries)
+		{
+			fullQuery.append("{");
+			fullQuery.append(query);
+			fullQuery.append("}UNION");
+		}		
+		return answerSet(fullQuery.substring(0,fullQuery.length()-"UNION".length())+"}");			
+	}
+
+
+	protected static Set<String> getResourcesMultiThreaded(String[] queries) throws InterruptedException
+	{		
+		ExecutorService executor = Executors.newFixedThreadPool(4);
+		final Set<String> resources = Collections.newSetFromMap(new HashMap<String,Boolean>());
+		final AtomicInteger i = new AtomicInteger(0);
+		for(final String query: queries)
+		{			
+			executor.submit(new Runnable()
+			{			
+				@Override
+				public void run()
+				{					
+					int threadNumber = i.incrementAndGet();
+					
+					System.out.println("executing query "+threadNumber+": "+query);					
+					resources.addAll(answerSet(query));//					
+					System.out.println("finished executing query "+threadNumber);
+				}
+			}); 
+		}
+		executor.shutdown();
+		if(!executor.awaitTermination(2,TimeUnit.MINUTES)) System.out.println("timeout, x/y completed");
+		return resources;		
+	}
+	
 	public static Set<String> correlatedDBpediaResourceLabels(String uri) throws InterruptedException, TimeoutException
 	{
 		System.out.println("********Getting correlated resources for uri "+uri+"*********+");
@@ -85,55 +125,67 @@ public class CorrelatedResources
 	{
 		String[] queries = new String[]
 				{
-				"select ?sub where {?sub rdfs:subClassOf <"+clazz+">}",
-				"select ?sup where {<"+clazz+"> rdfs:subClassOf ?sup}",
+				"select ?c where {?c rdfs:subClassOf <"+clazz+">}",
+				"select ?c where {<"+clazz+"> rdfs:subClassOf ?c}",
+				"select ?c where {<"+clazz+"> skos:broader ?c}",
+				"select ?c where {<"+clazz+"> skos:narrower ?c}",
 				"select ?c where {?s a <"+clazz+">. ?s a ?c. filter (?c!=<"+clazz+">)}",
 				"select ?c where {<"+clazz+"> rdfs:label ?l. ?c rdfs:label ?l. }"//filter (?c!=<"+clazz+">)    
 				};				
-		return getResources(queries);		         	                                                                                                          	
+		return getResourcesUnion(queries,"?c");
 	}
-
+	
 	protected static Set<String> correlatedResourcesForProperty(String prop) throws InterruptedException
 	{	
 		String[] queries = new String[]
 				{
 				"select ?p where {?p rdfs:subPropertyOf <"+prop+"> } limit "+LIMIT,
 				"select ?p where {<"+prop+"> rdfs:subPropertyOf ?p} limit "+LIMIT,
+				"select ?p where {<"+prop+"> skos:mappingRelation ?p} limit "+LIMIT,
+				"select ?p where {<"+prop+"> skos:closeMatch ?p} limit "+LIMIT,
+				"select ?p where {<"+prop+"> skos:exactMatch ?p} limit "+LIMIT,
+				"select ?p where {<"+prop+"> skos:broadMatch ?p} limit "+LIMIT,
+				"select ?p where {<"+prop+"> skos:narrowMatch ?p} limit "+LIMIT,
+				"select ?p where {<"+prop+"> skos:relatedMatch ?p} limit "+LIMIT,
 				"select ?p where {?s <"+prop+"> ?o. ?s ?p ?o. filter (?p!=<"+prop+">)} limit "+LIMIT,
 				"select ?p where {<"+prop+"> rdfs:label ?l. ?p rdfs:label ?l.} limit "+LIMIT
+				
 				};				
-		return getResources(queries);
+		return getResourcesUnion(queries,"?p");
 	}
 	
-	protected static Set<String> getResources(String[] queries) throws InterruptedException
-	{
-		ExecutorService executor = Executors.newFixedThreadPool(4);
-		final Set<String> resources = Collections.newSetFromMap(new HashMap<String,Boolean>());
-		final AtomicInteger i = new AtomicInteger(0);
-		for(final String query: queries)
-		{			
-			executor.submit(new Runnable()
-			{			
-				@Override
-				public void run()
-				{					
-					int threadNumber = i.incrementAndGet();
-					
-					System.out.println("executing query "+threadNumber+": "+query);
-					QueryExecution qe = new QueryEngineHTTP(ENDPOINT,query);
-					resources.addAll(answerSet(query));
-//					ResultSet rs = qe.execSelect();					
-//					while(rs.hasNext())
-//					{												
-//						resources.add(rs.next().getResource("p").toString());						
-//					}
-					System.out.println("finished executing query "+threadNumber);
-				}
-			}); 
-		}
-		executor.shutdown();
-		if(!executor.awaitTermination(2,TimeUnit.MINUTES)) System.out.println("timeout, x/y completed");
-		return resources;		
-	}
+	
+	
+//	protected static Set<String> getResources(String[] queries) throws InterruptedException
+//	{
+//		ExecutorService executor = Executors.newFixedThreadPool(4);
+//		final Set<String> resources = Collections.newSetFromMap(new HashMap<String,Boolean>());
+//		final AtomicInteger i = new AtomicInteger(0);
+//		for(final String query: queries)
+//		{			
+//			executor.submit(new Runnable()
+//			{			
+//				@Override
+//				public void run()
+//				{					
+//					int threadNumber = i.incrementAndGet();
+//					
+//					System.out.println("executing query "+threadNumber+": "+query);
+//					QueryExecution qe = new QueryEngineHTTP(ENDPOINT,query);
+//					resources.addAll(answerSet(query));
+////					ResultSet rs = qe.execSelect();					
+////					while(rs.hasNext())
+////					{												
+////						resources.add(rs.next().getResource("p").toString());						
+////					}
+//					System.out.println("finished executing query "+threadNumber);
+//				}
+//			}); 
+//		}
+//		executor.shutdown();
+//		if(!executor.awaitTermination(2,TimeUnit.MINUTES)) System.out.println("timeout, x/y completed");
+//		return resources;		
+//	}
+	
 	
 }
