@@ -126,7 +126,7 @@ public static void main(String[] args) throws IOException, InterruptedException
 {
 	MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
 	MultiMap<String,String> keywordToResource = new MultiHashMap<>();
-	try(Scanner in = new Scanner(new File("input/qald2012train.tsv")))
+	try(Scanner in = new Scanner(new File("input/qald2012train2.tsv")))
 	{
 		int i=0;
 		while(in.hasNextLine())
