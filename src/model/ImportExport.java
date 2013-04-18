@@ -126,6 +126,7 @@ public static void main(String[] args) throws IOException, InterruptedException
 {
 	MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
 	MultiMap<String,String> keywordToResource = new MultiHashMap<>();
+	final File outputFile = new File("qald.tsv");
 	try(Scanner in = new Scanner(new File("input/qald2012train2.tsv")))
 	{
 		int i=0;
@@ -171,7 +172,7 @@ public static void main(String[] args) throws IOException, InterruptedException
 	//			}			
 	//		}
 	String s = multiMapToStringTsvCsv(keywordToResource,keywordToLabel);
-	FileUtils.writeStringToFile(new File("qald.tsv"),s);
+	FileUtils.writeStringToFile(outputFile,s);
 }
 
 }
