@@ -45,5 +45,5 @@ music	dbo:Single
 company	dbo:Organisation
 actress	dbo:Actor
 country start dbo:sourceCountry
-border	dbpedia2:north dbpedia2:south	dbpedia2:southeast	dbpedia2:east	dbpedia2:west	dbpedia2:design
+border	dbpedia2:north	dbpedia2:south	dbpedia2:southeast	dbpedia2:east	dbpedia2:west	dbpedia2:design
 same type	dbp:accessioneudate
