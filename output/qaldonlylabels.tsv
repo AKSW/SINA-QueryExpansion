@@ -1,0 +1,38 @@
+car	dbo:Automobile	automóvil,Automobil,automobile,avtomobil,automovel
+called after	dbp:shipNamesake	Ship namesake
+join the EU	dbp:accessioneudate	accessionEUdate
+highest	dbo:elevation	elevation (μ),altitude (μ),υψόμετρο (μ)
+daughter	dbo:child	child,Kind
+spoken	dbo:language,dbo:spokenIn	língua,Sprache,langage,γλώσσα,language,spoken in
+dwelt	dbp:abode	Abode
+alive	dbo:deathDate	ημερομηνία_θανάτου,Sterbedatum,death date,date de décès
+husband	dbp:spouse	spouse
+entrance	dbo:numberOfEntrances	number of entrances
+war	dbo:battle	battle,Schlacht
+inhabitant	dbo:populationTotal,dbp:population,prop:populationUrban	população total,συνολικός_πληθυσμός,population totale,Einwohnerzahl,population total,population
+page	dbo:numberOfPages	Anzahl der Seiten,number of pages
+created	dbo:author	author
+ruling party	dbp:leaderParty	leader party
+first season	dbo:seasonNumber	season number
+tall	dbo:height	ύψος (μ),altura (μ),height (μ),hauteur (μ),Höhe (μ),višina (μ)
+music	dbo:Single	싱글,single
+first name	foaf:givenName	Given name
+governed	dbp:rulingParty	ruling party
+website	foaf:homepage	homepage
+mayor	dbo:leaderName,dbo:leader	président,leader name,όνομα_αρχηγού,lider,leader
+bury	dbo:restingPlace,dbo:Settlement	resting place,municipalité,도시,municipality,οικισμός
+movie	dbo:starring,dbo:Film	ηθοποιοί,starring,film,ταινία,영화,Film
+win	dbo:award	διακρίσεις,Auszeichnung,award,récompense
+video game	dbo:Software	programska oprema,Software,software,λογισμικό,소프트웨어,logiciel
+military conflict	dbo:battle	battle,Schlacht
+abbreviation	dbp:postalabbreviation	PostalAbbreviation
+Conflict	dbo:battle	battle,Schlacht
+professional	dbpedia2:occupation,dbo:occupation	occupation,activité,Beschäftigung
+wife	dbo:spouse	spouse
+company	dbo:Organisation	조직,organisation,Organisation,organização,organizacija
+called	foaf:givenName,dbp:alias,dbp:nickname	Nickname,Given name
+own	dbo:keyPerson,dbo:keyPerson	key person,key person
+actress	dbo:Actor	acteur,Schauspieler,attore,ator,영화인,aktor,actor
+same type	dbp:accessioneudate	accessionEUdate
+found	dbo:foundationPlace	foundation place
+produce	dbp:manufacturer,dbp:assembly	manufacturer
