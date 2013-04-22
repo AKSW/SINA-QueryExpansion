@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
 import de.konrad.commons.sparql.PrefixHelper;
@@ -24,14 +25,15 @@ public class CorrelatedResources
 
 	/** gets a set of the first bindings of each row of the result of a sparql query. */
 	protected static Set<String> answerSet(String query)
-	{		
+	{
 		Set<String> resources = new HashSet<String>();
 		QueryExecution qe = new QueryEngineHTTP(ENDPOINT,query);
 		ResultSet rs = qe.execSelect();
 		while(rs.hasNext())
 		{
 			QuerySolution qs = rs.nextSolution();
-			resources.add(qs.getResource(qs.varNames().next()).toString());
+			RDFNode node = qs.get(qs.varNames().next());
+			resources.add((node.isLiteral()?node.asLiteral().getLexicalForm():node.asResource()).toString());
 		}
 		return resources;
 	}
