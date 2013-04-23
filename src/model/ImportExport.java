@@ -110,7 +110,7 @@ public class ImportExport
 			{				
 				for(Feature feature: Feature.values())
 				{
-					out.println("@ATTRIBUTE "+feature+" NUMERIC");				
+					out.println("@ATTRIBUTE "+feature+" {0,1}");				
 				}
 			}
 			out.println("@DATA");
