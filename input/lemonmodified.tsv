@@ -1,0 +1,37 @@
+labor union	dbo:TradeUnion
+altitude	dbo:elevation
+originate	dbo:source
+traverse	dbo:crosses
+study		dbo:university
+husband	dbo:spouse
+founded	dbo:formationDate
+author	dbo:writer
+generating station	dbo:PowerStation
+football player	dbo:GridironFootballPlayer	dbo:AmericanFootballPlayer
+height	dbo:elevation
+married	dbo:spouse
+located	dbo:city	dbo:range	dbo:country
+write	dbo:artist	dbo:writer
+formed	dbo:formationDate
+festival	dbo:FilmFestival	dbo:MusicFestival
+feature	dbo:starring
+tall	dbo:elevation
+power house	dbo:PowerStation
+work	dbo:profession	dbo:field
+generating plant	dbo:PowerStation
+occupation	dbo:profession
+electricity station	dbo:PowerStation
+play	dbo:instrument	dbo:starring
+established	dbo:formationDate
+sublime	dbo:sublimationPoint
+like	dbo:similar
+drafted	dbo:draftYear
+record	dbo:artist
+interpreter	dbo:artist
+soccer team	dbo:SoccerClub
+wife	dbo:spouse
+high	dbo:elevation
+power plant	dbo:PowerStation
+bridge	dbo:crosses
+part	dbo:range
+span	dbo:crosses
