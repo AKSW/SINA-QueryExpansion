@@ -135,7 +135,7 @@ public class ImportExport
 		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
 		MultiMap<String,String> keywordToResource = new MultiHashMap<>();
 		final File outputFile = new File("qald.tsv");
-		try(Scanner in = new Scanner(new File("input/lemon.tsv")))
+		try(Scanner in = new Scanner(new File("input/lemonmodified.tsv")))
 		{
 			int i=0;
 			Set<String> allLabels = new HashSet<>();

@@ -1,0 +1,31 @@
+labor union	dbo:TradeUnion	trade union
+altitude	dbo:elevation	elevation (m)
+originate	dbo:source	source
+traverse	dbo:crosses	crosses
+study	,dbo:university	university
+husband	dbo:spouse	spouse
+author	dbo:writer	writer
+founded	dbo:formationDate	formation date
+football player	dbo:GridironFootballPlayer,dbo:AmericanFootballPlayer	gridiron football player,american football player
+married	dbo:spouse	spouse
+height	dbo:elevation	elevation (m)
+located	dbo:country,dbo:city,dbo:range	city,range,country
+write	dbo:writer,dbo:artist	artist,writer
+formed	dbo:formationDate	formation date
+festival	dbo:MusicFestival,dbo:FilmFestival	film festival,music festival
+feature	dbo:starring	starring
+tall	dbo:elevation	elevation (m)
+work	dbo:profession,dbo:field	profession,field
+occupation	dbo:profession	profession
+play	dbo:starring,dbo:instrument	instrument,starring
+established	dbo:formationDate	formation date
+like	dbo:similar	similar
+drafted	dbo:draftYear	draft year
+record	dbo:artist	artist
+interpreter	dbo:artist	artist
+soccer team	dbo:SoccerClub	soccer club
+wife	dbo:spouse	spouse
+bridge	dbo:crosses	crosses
+high	dbo:elevation	elevation (m)
+part	dbo:range	range
+span	dbo:crosses	crosses
