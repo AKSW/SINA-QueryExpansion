@@ -20,7 +20,8 @@ import de.konrad.commons.sparql.PrefixHelper;
 
 public class CorrelatedResources
 {
-	static final String ENDPOINT = "http://dbpedia.org/sparql";
+//	static final String ENDPOINT = "http://dbpedia.org/sparql";
+	static final String ENDPOINT = "http://139.18.2.96:8910/sparql";
 	static final int LIMIT = 100;
 
 	/** gets a set of the first bindings of each row of the result of a sparql query. */

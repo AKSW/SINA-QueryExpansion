@@ -23,6 +23,10 @@ import de.konrad.commons.sparql.PrefixHelper;
 // TODO: tidy up the class a bit
 public class ImportExport
 {	
+	enum ExportDatasetMode {CORRELATED_RESOURCES,LABELS_ONLY}
+	static final ExportDatasetMode MODE = ExportDatasetMode.LABELS_ONLY;
+
+	static final boolean INVERSE_FUNCTIONAL = true;
 	/** Generates a tab separated (tsv) String with keyword, resource, and correlated resource label columns.
 	 * Multiple correlated resource labels are separated by commas. 
 	 *To save it to a file use FileUtils.writeStringToFile(File,String)*/
@@ -122,6 +126,8 @@ public class ImportExport
 	}
 
 	/** Calculate the correlated resources for the qald2 data and write them to files.
+	 * The input file contains the original label and assigned resource. This function now generates (correlated if chosen) labels of the resource
+	 * where ideally one of the labels is identical to the original label.  
 	 * TODO?: Resources are randomly sorted in their processing order and written each to their own file if it doesn't exist yet because the method takes really long.   
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException
@@ -129,25 +135,37 @@ public class ImportExport
 		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
 		MultiMap<String,String> keywordToResource = new MultiHashMap<>();
 		final File outputFile = new File("qald.tsv");
-		try(Scanner in = new Scanner(new File("input/qald2012train2.tsv")))
+		try(Scanner in = new Scanner(new File("input/lemon.tsv")))
 		{
 			int i=0;
+			Set<String> allLabels = new HashSet<>();
 			while(in.hasNextLine())
 			{
 				i++;
 				String[] tokens = in.nextLine().trim().split("\t");
 				String keyword = tokens[0];
 				System.out.println("processing keyword "+i+": "+keyword);
-				Set<String> allResources = new HashSet<>(); 
+				Set<String> resources = new HashSet<>(); 
 				for(int j=1;j<tokens.length;j++)
 				{
 					String resource = tokens[j];
-					allResources.add(resource);
+					resources.add(resource);
+					Set<String> labels = null;					
 					try
 					{
-//						Set<String> correlatedResources=CorrelatedResources.answerSet("select ?l {<"+PrefixHelper.expand(resource)+"> rdfs:label ?l.}");			
-						Set<String> correlatedResources=CorrelatedResources.correlatedDBpediaResourceLabels(resource);
-						keywordToLabel.putAll(keyword,correlatedResources);
+						switch(MODE)
+						{
+							case LABELS_ONLY:
+								labels=CorrelatedResources.answerSet("select ?l {<"+PrefixHelper.expand(resource)+"> rdfs:label ?l.}");
+								break;
+							case CORRELATED_RESOURCES:
+								labels=CorrelatedResources.correlatedDBpediaResourceLabels(resource); 
+								break;
+						}
+						
+						keywordToLabel.putAll(keyword,labels);
+						allLabels.addAll(labels);
+
 					}
 					catch(TimeoutException e)
 					{
@@ -155,7 +173,7 @@ public class ImportExport
 					}
 
 				}
-				keywordToResource.putAll(keyword,allResources);
+				keywordToResource.putAll(keyword,resources);
 			}
 		}
 		//		int i=0;
@@ -178,5 +196,4 @@ public class ImportExport
 		String s = multiMapToStringTsvCsv(keywordToResource,keywordToLabel);
 		FileUtils.writeStringToFile(outputFile,s);
 	}
-
 }
