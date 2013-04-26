@@ -4,13 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.collections15.MultiMap;
-import org.apache.commons.collections15.map.HashedMap;
 import org.apache.commons.collections15.multimap.MultiHashMap;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -20,9 +15,8 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.PrefixMapping;
 
-public class CreateNewInputFiles
+public class CreateLemonInputFile
 {
 	static Model m;
 
@@ -41,9 +35,8 @@ public class CreateNewInputFiles
 
 		//		new FileManager().readModel(m,f.getAbsolutePath(),"TURTLE");
 		m = ModelFactory.createMemModelMaker().createDefaultModel();
-		m.read(new FileInputStream(f),"http://sc.cit-ec.uni-bielefeld.de/lexica/dbpedia#","TURTLE");
-		//		m.setNsPrefix("","http://sc.cit-ec.uni-bielefeld.de/lexica/dbpedia#");
-		//		m.setNsPrefix("lemon","http://www.monnet-project.eu/lemon#");
+		m.read(new FileInputStream(f),"","TURTLE");
+//		
 
 		ResultSet entrySet = execSelect("select ?s ?l ?d {?s a lemon:LexicalEntry. ?s lemon:canonicalForm ?c." +
 				"?c lemon:writtenRep ?l. ?s lemon:sense ?sense. ?sense lemon:reference ?d.}");

@@ -1,5 +1,6 @@
 package model;
 
+import static model.SPARQLHelper.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +24,7 @@ import de.konrad.commons.sparql.PrefixHelper;
 // TODO: tidy up the class a bit
 public class ImportExport
 {	
+	static final File INPUT_FILE = new File("input/schemadbpedia.tsv");
 	enum ExportDatasetMode {CORRELATED_RESOURCES,LABELS_ONLY}
 	static final ExportDatasetMode MODE = ExportDatasetMode.LABELS_ONLY;
 
@@ -135,7 +137,7 @@ public class ImportExport
 		MultiMap<String,String> keywordToLabel = new MultiHashMap<>();		
 		MultiMap<String,String> keywordToResource = new MultiHashMap<>();
 		final File outputFile = new File("qald.tsv");
-		try(Scanner in = new Scanner(new File("input/lemonmodified.tsv")))
+		try(Scanner in = new Scanner(INPUT_FILE))
 		{
 			int i=0;
 			Set<String> allLabels = new HashSet<>();
@@ -156,7 +158,7 @@ public class ImportExport
 						switch(MODE)
 						{
 							case LABELS_ONLY:
-								labels=CorrelatedResources.answerSet("select ?l {<"+PrefixHelper.expand(resource)+"> rdfs:label ?l.}");
+								labels=answerSet("select ?l {<"+PrefixHelper.expand(resource)+"> rdfs:label ?l.}",DBPEDIA_ENDPOINT);
 								break;
 							case CORRELATED_RESOURCES:
 								labels=CorrelatedResources.correlatedDBpediaResourceLabels(resource); 

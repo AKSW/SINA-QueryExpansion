@@ -1,5 +1,8 @@
 package model;
 
+import static model.SPARQLHelper.DBPEDIA_ENDPOINT;
+import static model.SPARQLHelper.answerSet;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,34 +13,16 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
 import de.konrad.commons.sparql.PrefixHelper;
 
 public class CorrelatedResources
 {
-//	static final String ENDPOINT = "http://dbpedia.org/sparql";
-	static final String ENDPOINT = "http://139.18.2.96:8910/sparql";
 	static final int LIMIT = 100;
-
-	/** gets a set of the first bindings of each row of the result of a sparql query. */
-	protected static Set<String> answerSet(String query)
-	{
-		Set<String> resources = new HashSet<String>();
-		QueryExecution qe = new QueryEngineHTTP(ENDPOINT,query);
-		ResultSet rs = qe.execSelect();
-		while(rs.hasNext())
-		{
-			QuerySolution qs = rs.nextSolution();
-			RDFNode node = qs.get(qs.varNames().next());
-			resources.add((node.isLiteral()?node.asLiteral().getLexicalForm():node.asResource()).toString());
-		}
-		return resources;
-	}
 
 	protected static Set<String> getResourcesUnion(final String[] queries, String var) throws InterruptedException
 	{
@@ -49,9 +34,9 @@ public class CorrelatedResources
 			fullQuery.append(query);
 			fullQuery.append("}UNION");
 		}		
-		return answerSet(fullQuery.substring(0,fullQuery.length()-"UNION".length())+"}");			
+		return SPARQLHelper.answerSet(fullQuery.substring(0,fullQuery.length()-"UNION".length())+"}",SPARQLHelper.DBPEDIA_ENDPOINT);			
 	}
-
+	
 
 	protected static Set<String> getResourcesMultiThreaded(String[] queries) throws InterruptedException
 	{		
@@ -68,7 +53,7 @@ public class CorrelatedResources
 					int threadNumber = i.incrementAndGet();
 					
 					System.out.println("executing query "+threadNumber+": "+query);					
-					resources.addAll(answerSet(query));//					
+					resources.addAll(answerSet(query,DBPEDIA_ENDPOINT));//					
 					System.out.println("finished executing query "+threadNumber);
 				}
 			}); 
@@ -113,7 +98,7 @@ public class CorrelatedResources
 				@Override
 				public void run()
 				{
-					QueryExecution qe = new QueryEngineHTTP(ENDPOINT,"select ?l {<"+resource+"> rdfs:label ?l. filter(langmatches(lang(?l),'en'))}");
+					QueryExecution qe = new QueryEngineHTTP(SPARQLHelper.DBPEDIA_ENDPOINT,"select ?l {<"+resource+"> rdfs:label ?l. filter(langmatches(lang(?l),'en'))}");
 					ResultSet rs = qe.execSelect();					
 					while(rs.hasNext()) {labels.add(rs.nextSolution().getLiteral("?l").getLexicalForm());}
 				}

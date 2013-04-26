@@ -1,5 +1,6 @@
 package model;
 
+import static model.SPARQLHelper.DBPEDIA_ENDPOINT;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ public class CorrelatedResourcesTest
 	public void testAnswerSet()
 	{
 		assertTrue(
-				CorrelatedResources.answerSet("select distinct ?s where {?s a dbpedia-owl:Country. ?s rdfs:label ?l. ?l bif:contains 'Germany' }")
+				SPARQLHelper.answerSet("select distinct ?s where {?s a dbpedia-owl:Country. ?s rdfs:label ?l. ?l bif:contains 'Germany' }",DBPEDIA_ENDPOINT)
 				.contains("http://dbpedia.org/resource/Germany")
 				);
 	}

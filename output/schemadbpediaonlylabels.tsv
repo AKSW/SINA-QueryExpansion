@@ -1,0 +1,30 @@
+inLanguage	dbo:language	language
+User	dbo:Person	person
+MusicRecording	dbo:Song	song
+TVEpisode	dbo:TelevisionEpisode	television episode
+startDate	dbo:startDate	start date
+BodyOfWater	dbo:BodyOfWater	body of water
+Ski Resort	dbo:SkiArea	ski area
+Contained in	dbo:locatedInArea	located in area
+Organization	dbo:Organisation	organisation
+children	dbo:child	child
+Creative Work	dbo:Work	work
+episodeNumber	dbo:episodeNumber	episode number
+numberOfEpisodes	dbo:numberOfEpisodes	number of episodes
+College or University	dbo:University	university
+Actors	dbo:starring	starring
+River Body of Water	dbo:River	river
+Shopping Center	dbo:ShoppingMall	shopping mall
+Movie	dbo:Film	film
+équipe	dbo:club	club
+byArtist	dbo:artist	artist
+relatedTo	dbo:relative	relative
+Administrative Area	dbo:AdministrativeRegion	administrative region
+musicBy	dbo:musicComposer	music composer
+LandmarksOrHistoricalBuildings	dbo:HistoricBuilding	historic building
+Book Format	dbo:mediaType	media type
+duration	dbo:runtime	runtime (s)
+Lake Body of Water	dbo:Lake	lake
+Branch of	dbo:parentOrganisation	parent organisation
+awards	dbo:award	award
+WebPage	dbo:Website	website
